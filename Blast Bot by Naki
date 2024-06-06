@@ -1,7 +1,7 @@
 @name Blast Bot by Naki
 @inputs [BaseEnt TopEnt TurretBaseEnt TurretEnt]:entity
 @persist [Base Seat]:entity LengthA LengthB LengthC [Legs Targets Angles]:table
-@persist MOVEW MOVEA MOVED MOVEX Moving WalkRate Step Yaw
+@persist MOVEW MOVEA MOVED MOVEX Moving WalkRate Step Yaw Yaw2
 @persist [HT CT Bones]:table [SpawnStatus CoreStatus]:string [HN CN I SpawnCounter] RigLast
 if(dupefinished()){reset()}
 if(first()){
@@ -382,13 +382,14 @@ if(first()){
     Vel2=Base:vel():setZ(0)/3
     LocalEyes = holoEntity(Bones["CamHelper",number]):toLocal(Driver:eyeAngles()*Active+holoEntity(Bones["Base",number]):angles()*!Active)
     
-    Yaw += clamp(toLocalAng(vec(),LocalEyes,vec(),holoEntity(Bones["CamHelper",number]):toLocal(holoEntity(Bones["Base",number]):angles())):yaw()+(90-(45*(W-S)))*(A-D),-7,7)*clamp(sin(WalkRate*180)*5,0,1)*abs(MOVEX)
+    Yaw += clamp(toLocalAng(vec(),LocalEyes,vec(),holoEntity(Bones["CamHelper",number]):toLocal(holoEntity(Bones["Base",number]):angles())):yaw()+(90-(45*(W-S)))*(A-D),-15,15)*clamp(sin(WalkRate*180)*5,0,1)*abs(MOVEX)
+    Yaw2 += holoEntity(Bones["Base",number]):toLocal(ang(0,Yaw,0)):yaw()/5
     Speed=20
     BaseAngVel=clamp(change(Yaw)*2,-45,45)
-    FrontLeft=rangerOffsetHull(125,Base:toWorld(vec(70+Speed*MOVEX,70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw+BaseAngVel)),-Base:up(),vec(15))
-    FrontRight=rangerOffsetHull(125,Base:toWorld(vec(70+Speed*MOVEX,-70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw+BaseAngVel)),-Base:up(),vec(15))
-    BackLeft=rangerOffsetHull(125,Base:toWorld(vec(-70+Speed*MOVEX,70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw+BaseAngVel)),-Base:up(),vec(15))
-    BackRight=rangerOffsetHull(125,Base:toWorld(vec(-70+Speed*MOVEX,-70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw+BaseAngVel)),-Base:up(),vec(15))
+    FrontLeft=rangerOffsetHull(125,Base:toWorld(vec(70+Speed*MOVEX,70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw2)),-Base:up(),vec(15))
+    FrontRight=rangerOffsetHull(125,Base:toWorld(vec(70+Speed*MOVEX,-70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw2)),-Base:up(),vec(15))
+    BackLeft=rangerOffsetHull(125,Base:toWorld(vec(-70+Speed*MOVEX,70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw2)),-Base:up(),vec(15))
+    BackRight=rangerOffsetHull(125,Base:toWorld(vec(-70+Speed*MOVEX,-70+Speed*MOVEY,0):rotateAroundAxis(vec(0,0,1),Yaw2)),-Base:up(),vec(15))
     
     
     if(Targets["first",number]!=1){
@@ -438,8 +439,8 @@ if(first()){
     holoAng(Bones["CamHelper",number],ang())
     holoPos(Bones["CamHelper",number],holoEntity(Bones["Root",number]):toWorld(vec(0,0,125+35*clamp(Base:vel():setZ(0):length()*0.01,MOVEX,1)*(0.7-(0.45+(sin(WalkRate*180)*(sin(WalkRate*180)))*0.3)))))
     holoPos(Bones["Base",number],holoEntity(Bones["Root",number]):toWorld(vec(0,0,75+15*clamp(Base:vel():setZ(0):length()*0.01,MOVEX,1)*(0.7-(0.45+(sin(WalkRate*180)*(sin(WalkRate*180)))*0.3)))))
-    holoAng(Bones["Base",number],ang(Pitch,0,Roll):rotateAroundAxis(vec(0,0,1),Yaw))
-    holoAng(Bones["Top",number],holoEntity(Bones["Base",number]):toWorld(ang(0,holoEntity(Bones["Base",number]):toLocal(Base:vel():toAngle()):yaw()*abs(MOVEX),0)))
+    holoAng(Bones["Base",number],ang(Pitch,0,Roll):rotateAroundAxis(vec(0,0,1),Yaw2))
+    holoAng(Bones["Top",number],holoEntity(Bones["Base",number]):toWorld(ang(0,(holoEntity(Bones["Base",number]):toLocal(Base:vel():toAngle()):yaw()+change(Yaw2)*5)*abs(MOVEX),0)))
     holoAng(Bones["TurretBase",number],holoEntity(Bones["Top",number]):toWorld(ang(0,holoEntity(Bones["Top",number]):toLocal(Driver:eyeAngles()*Active+holoEntity(Bones["Base",number]):angles()*!Active):yaw(),0)))
     holoAng(Bones["Turret",number],holoEntity(Bones["TurretBase",number]):toWorld(ang(clamp(holoEntity(Bones["TurretBase",number]):toLocal(Driver:eyeAngles()*Active+holoEntity(Bones["Base",number]):angles()*!Active):pitch(),-35,35),0,0)))
     
