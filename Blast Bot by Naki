@@ -383,7 +383,7 @@ if(first()){
     Vel2=Base:vel():setZ(0)/3
     LocalEyes = holoEntity(Bones["CamHelper",number]):toLocal(Driver:eyeAngles()*Active+holoEntity(Bones["Base",number]):angles()*!Active)
     
-    Yaw = slerp(quat(holoEntity(Bones["Base",number])),quat(holoEntity(Bones["Base",number]):toLocal(ang(0,holoEntity(Bones["Base",number]):angles():yaw()+LocalEyes:yaw()+(90-(45*(W-S)))*(A-D)+(180*(S&!(A|D))),0))),1):toAngle():yaw()#clamp(toLocalAng(vec(),LocalEyes,vec(),holoEntity(Bones["CamHelper",number]):toLocal(holoEntity(Bones["Base",number]):angles())):yaw()+(90-(45*(W-S)))*(A-D),-7,7)*clamp(sin(WalkRate*180)*5,0,1)*abs(MOVEX)
+    Yaw = slerp(quat(holoEntity(Bones["Base",number])),quat(holoEntity(Bones["Base",number]):toLocal(ang(0,holoEntity(Bones["Base",number]):angles():yaw()+LocalEyes:yaw()+(90-(45*(W-S)))*(A-D)+(180*(S&!(A|D))),0))),MOVEX):toAngle():yaw()
     Yaw2 += holoEntity(Bones["Base",number]):toLocal(ang(0,Yaw,0)):yaw()/5
     Speed=20
     BaseAngVel=clamp(change(Yaw)*2,-45,45)
@@ -461,7 +461,7 @@ if(first()){
         local NHipB=T[3,number]
         local NKnee=T[4,number]
         local NAnkle=T[5,number]
-        local Target=Targets[I,vector]-holoEntity(Bones["Base",number]):up()*10*clamp(Base:vel():setZ(0):length()*0.01,MOVEX,1)
+        local Target=Targets[I,vector]-holoEntity(Bones["Base",number]):up()*(10-Base:vel():z()/10)*clamp(Base:vel():setZ(0):length()*0.01,MOVEX,1)
         local Flip=I==(2|4)
         leg_ik(NHipBase,NHipA,NHipB,NKnee,NAnkle,holoEntity(Bones["Base",number]),Target,-90+Angles[I,number])
     }
